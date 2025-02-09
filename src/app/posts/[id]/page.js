@@ -15,49 +15,82 @@ export default async function PostPage({ params, searchParams }) {
   const { commentSubmitted, author, content } = searchParams;
 
   if (commentSubmitted) {
-    // Debug: Log the author and content of the comment being submitted
-    console.log("Form Submitted:");
-    console.log("Author:", author);
-    console.log("Content:", content);
+    console.log("Form Submitted:", { author, content });
 
     await db.query(
       "INSERT INTO comments (post_id, author, content) VALUES ($1, $2, $3)",
       [id, author, content]
     );
 
-    // Debug: Confirm the insertion process
     console.log("Comment inserted into DB");
 
-    // Redirect back to the post page to see the newly added comment
     return redirect(`/posts/${id}`);
   }
 
   return (
-    <>
-      <h1>{postData.title}</h1>
-      <p>{postData.content}</p>
+    <div className="min-h-screen p-6 flex flex-col items-center">
+      {/* Post Details */}
+      <div className="p-6 shadow-lg rounded-lg w-full max-w-2xl">
+        <h1 className="text-3xl font-bold text-white mb-4">{postData.title}</h1>
+        <p className="text-white">{postData.content}</p>
+      </div>
 
-      <h3>Comments</h3>
-      {wrangledComments.length === 0 && (
-        <p>No comments yet. Be the first to comment!</p>
-      )}
+      {/* Comments Section */}
+      <div className="w-full max-w-2xl mt-6">
+        <h3 className="text-xl font-semibold text-white mb-3">Comments</h3>
 
-      {wrangledComments.map((comment) => (
-        <div key={comment.id}>
-          <p>
-            {comment.author}: {comment.content}
+        {wrangledComments.length === 0 ? (
+          <p className="text-white">
+            No comments yet. Be the first to comment!
           </p>
-        </div>
-      ))}
+        ) : (
+          <div className="space-y-4">
+            {wrangledComments.map((comment) => (
+              <div
+                key={comment.id}
+                className="bg-white p-4 shadow rounded-lg border-l-4 border-gray-500"
+              >
+                <p className="text-black font-semibold">{comment.author}:</p>
+                <p className="text-black">{comment.content}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      <h3>Leave a Comment</h3>
-      <form action={`/posts/${id}`} method="GET">
-        <input type="text" name="author" placeholder="Your name" required />
-        <textarea name="content" placeholder="Your comment" required></textarea>
-        <button type="submit" name="commentSubmitted" value="true">
-          Submit
-        </button>
-      </form>
-    </>
+      {/* Comment Form */}
+      <div className="w-full max-w-2xl mt-6">
+        <h3 className="text-xl font-semibold text-white mb-3">
+          Leave a Comment
+        </h3>
+        <form
+          action={`/posts/${id}`}
+          method="GET"
+          className=" p-6 shadow-lg rounded-lg space-y-4"
+        >
+          <input
+            type="text"
+            name="author"
+            placeholder="Your name"
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+          />
+          <textarea
+            name="content"
+            placeholder="Your comment"
+            required
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+          />
+          <button
+            type="submit"
+            name="commentSubmitted"
+            value="true"
+            className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition w-full"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

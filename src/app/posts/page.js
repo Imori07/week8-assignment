@@ -27,25 +27,64 @@ export default async function PostsPage({ searchParams }) {
   }
 
   return (
-    <>
-      <h1>A List of All Our Posts</h1>
-      <Link href="/posts?sort=asc">A-Z </Link> |
-      <Link href="/posts?sort=desc">Z-A</Link> |
-      <Link href="/newPost">Create a New Post</Link> |<Link href="/">Home</Link>
-      <div>
+    <div className="min-h-screen p-6">
+      <h1 className="text-4xl font-bold text-white text-center mb-6">
+        A List of All Our Posts
+      </h1>
+
+      {/* Sorting & Navigation Buttons */}
+      <div className="flex justify-center gap-4 mb-6">
+        <Link
+          href="/posts?sort=asc"
+          className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition shadow"
+        >
+          🔼 A-Z
+        </Link>
+        <Link
+          href="/posts?sort=desc"
+          className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition shadow"
+        >
+          🔽 Z-A
+        </Link>
+        <Link
+          href="/newPost"
+          className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition shadow"
+        >
+          ➕ Create Post
+        </Link>
+        <Link
+          href="/"
+          className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition shadow"
+        >
+          🏠 Home
+        </Link>
+      </div>
+
+      {/* Posts List */}
+      <div className="grid gap-6 max-w-2xl mx-auto">
         {wrangledPosts.map((post) => (
-          <div key={post.id}>
-            <h2>{post.title}</h2>
-            <Link href={`/posts/${post.id}`}>Read More</Link>
+          <div key={post.id} className="p-6 shadow-lg rounded-lg">
+            <h2 className="text-xl font-semibold text-white">{post.title}</h2>
+            <Link
+              href={`/posts/${post.id}`}
+              className="inline-block mt-3 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition shadow"
+            >
+              📖 Read More
+            </Link>
 
             {/* Delete Button Form */}
-            <form action={deletePost}>
+            <form action={deletePost} className="mt-4">
               <input type="hidden" name="postId" value={post.id} />
-              <button type="submit">Delete</button>
+              <button
+                type="submit"
+                className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition shadow"
+              >
+                🗑️ Delete
+              </button>
             </form>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
